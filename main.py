@@ -50,7 +50,7 @@ def get_typing_delay(text):
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Hi! I'm Alyssa Mae 💖
+        "Hi! I\\m Alyssa Mae 💖
 "
         "Your naughty HUMSS bad girl from Dasma 😏
 "
