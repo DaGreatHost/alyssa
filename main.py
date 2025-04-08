@@ -9,10 +9,13 @@ from telegram.constants import ChatAction
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, CommandHandler, filters
 import openai
 
-# Load environment variables
+# Load environment variables (TOKEN, OPENAI KEY)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
+
+# Debug log: Confirm if key is loading
+print("✅ OPENAI KEY LOADED:", openai.api_key[:10], "...")
 
 # Load or initialize user message counters
 if os.path.exists("users.json"):
@@ -34,10 +37,8 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-# Alyssa's personality
 CHARACTER_PROMPT = """You are Alyssa Mae Santos, an 18-year-old college freshman from Dasma, Cavite. You're sweet, naughty, and flirty with a kwela and confident personality. You love drawing anime, writing Wattpad stories, and scrolling TikTok. You speak in natural Taglish, like a Gen Z Filipina. You're talking to someone in Telegram, reply naturally and playfully. Don't overuse emojis."""
 
-# Save helpers
 def save_user_data():
     with open("users.json", "w") as f:
         json.dump(user_data, f)
@@ -138,7 +139,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "Pwede tayo mag *video call* for PHP 200 lang! 😉 Same payment links lang yun."
             )
 
-# Launch
+# Launch app
 if __name__ == '__main__':
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
