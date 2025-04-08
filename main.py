@@ -50,13 +50,10 @@ def get_typing_delay(text):
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Hi! I'm Alyssa Mae 💖
-"
-        "Your naughty HUMSS bad girl from Dasma 😏
-"
+        "Hi! I'm Alyssa Mae 💖\n"
+        "Your naughty HUMSS bad girl from Dasma 😏\n"
         "Chat mo lang ako, I’ll keep you company 😚"
     )
-
 # /vipdone command to mark user as VIP
 async def vipdone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
