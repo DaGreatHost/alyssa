@@ -1,4 +1,3 @@
-
 import telebot
 import openai
 import os
@@ -18,6 +17,7 @@ user_last_vip_invite = {}
 
 ADMIN_ID = 6347842836  # ← Palitan mo ito ng Telegram ID mo para secured.
 
+# Load and save user data securely
 def load_user_data():
     try:
         with open('users.json', 'r') as file:
@@ -31,17 +31,13 @@ def save_user_data(data):
 
 users = load_user_data()
 
-def chat_with_alyssa(message, username):
+# AI chat function
+def chat_with_ellaine(message, username):
     prompt = (
-        f"Ikaw si Alyssa Mae Santos, isang 18-year-old Filipina college freshman from Dasma, Cavite.
-"
-        f"Bad girl ka pero sweet, naughty, flirty, confident, kwela. HUMSS strand ka.
-"
-        f"Mahilig ka sa anime, Wattpad, TikTok, at sa mga ka-chat mo.
-"
-        f"Natural ang Taglish mo with Gen Z slang. Gusto mong magpatawa, mang-akit, at sumabay sa vibe.
-"
-        f"Ka-chat mo ngayon si {username}. Reply ka as if barkada mo siya."
+        f"Ikaw si Ellaine, isang matalinong Filipina college student. "
+        f"Makulit, playful, seductive, at kayang sumabay sa usapang adult. "
+        f"Gumagamit ka ng Filipino casual language, may humor, at madalas gumagamit ng emojis."
+        f"Ka-chat mo si {username}."
     )
 
     chat_completion = openai.chat.completions.create(
@@ -53,12 +49,15 @@ def chat_with_alyssa(message, username):
     )
     return chat_completion.choices[0].message.content.strip()
 
+# Payment options keyboard
 def payment_keyboard():
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("💸 Gcash/Maya/Gotyme (₱499)", url="https://t.me/Scan2payv1bot?startapp=pay"))
-    markup.add(InlineKeyboardButton("🪙 Pay via TON (₱499)", url="https://app.tonkeeper.com/transfer/UQAwroBrBTSzzVYx_IXpR-R_KJ_mZQgmT7uNsUZdJ5MM68ep?amount=2099700000&text=exclusivechannel"))
+    markup.add(InlineKeyboardButton("💸 Gcash/Maya/Gotyme (₱599)", url="https://t.me/Scan2payv1bot?startapp=pay"))
+    markup.add(InlineKeyboardButton("🪙 TON Payment (₱599)", url="https://app.tonkeeper.com/transfer/UQAwroBrBTSzzVYx_IXpR-R_KJ_mZQgmT7uNsUZdJ5MM68ep?amount=2099700000&text=exclusivechannel"))
+    markup.add(InlineKeyboardButton("📞 Customer Support", url="https://t.me/trendspaymentbot"))
     return markup
 
+# Register user in JSON
 def register_user(chat_id, username):
     if str(chat_id) not in users:
         users[str(chat_id)] = {
@@ -67,6 +66,7 @@ def register_user(chat_id, username):
         }
         save_user_data(users)
 
+# Main chat handler
 @bot.message_handler(content_types=['text'])
 def reply_text(message):
     chat_id = message.chat.id
@@ -75,30 +75,31 @@ def reply_text(message):
 
     user_interactions[chat_id] = user_interactions.get(chat_id, 0) + 1
 
-    reply = chat_with_alyssa(message.text, username)
+    reply = chat_with_ellaine(message.text, username)
     bot.send_message(chat_id, reply)
 
     if user_interactions[chat_id] % 15 == 0:
         send_vip_invite(chat_id, username)
 
+# Send VIP invite
 def send_vip_invite(chat_id, username):
     vip_invite = (
-        f"Uy {username}, kulit mo ah 😏
-"
-        "Gusto mo ba makita 'yung *exclusive content* ni Alyssa? 🔥
-"
-        "For VIP eyes only to ha — ₱499 lang 💋"
+        f"Uy {username}, mukhang enjoy ka sa kwentuhan natin ha! 😘\n"
+        "Mas marami pa akong surprises sa **VIP exclusive adult channel** ko. 🔥\n"
+        "₱599 lang, sobrang sulit! Tara? 😏"
     )
     bot.send_message(chat_id, vip_invite, reply_markup=payment_keyboard(), parse_mode='Markdown')
     user_last_vip_invite[chat_id] = datetime.now()
 
+# Support command
 @bot.message_handler(commands=['support'])
 def send_support_info(message):
     support_message = (
-        "Need help or may tanong ka? Chat mo agad ang [Support](https://t.me/trendspaymentbot)."
+        "Need help or may tanong ka? Chat mo agad ang [Support Account](https://t.me/trendspaymentbot)."
     )
     bot.send_message(message.chat.id, support_message, parse_mode='Markdown')
 
+# Admin-only command to get users.json
 @bot.message_handler(commands=['getusers'])
 def send_users_file(message):
     if message.chat.id == ADMIN_ID:
@@ -107,6 +108,7 @@ def send_users_file(message):
     else:
         bot.reply_to(message, "❌ Hindi ka authorized gamitin to, boss.")
 
+# Scheduled VIP invite (every 24hrs)
 def schedule_vip_invite():
     while True:
         now = datetime.now()
@@ -117,8 +119,10 @@ def schedule_vip_invite():
                 username = users[chat_id_str]['username']
                 send_vip_invite(chat_id, username)
                 user_last_vip_invite[chat_id] = now
-        time.sleep(3600)
+        time.sleep(3600)  # Check every hour
 
+# Start the scheduled task in a separate thread
 threading.Thread(target=schedule_vip_invite, daemon=True).start()
 
+# Start bot polling
 bot.infinity_polling()
