@@ -161,16 +161,3 @@ if __name__ == '__main__':
     app.run_polling()
 """
 
-
-
-# Rebuild the ZIP with the fixed main.py
-import zipfile
-zip_path = "/mnt/data/alyssa-bot-fixed.zip"
-with zipfile.ZipFile(zip_path, "w") as zipf:
-    for root, dirs, files in os.walk("/mnt/data/alyssa-bot"):
-        for file in files:
-            file_path = os.path.join(root, file)
-            arcname = os.path.relpath(file_path, "/mnt/data/alyssa-bot")
-            zipf.write(file_path, arcname=arcname)
-
-zip_path
