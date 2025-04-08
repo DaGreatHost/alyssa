@@ -50,7 +50,7 @@ def get_typing_delay(text):
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Hi! I\\m Alyssa Mae 💖
+        "Hi! I'm Alyssa Mae 💖
 "
         "Your naughty HUMSS bad girl from Dasma 😏
 "
@@ -80,7 +80,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_data[user_id]["history"] = user_data[user_id]["history"][-5:]
     save_data()
 
-    # Compose chat with Alyssa
     messages = [{"role": "system", "content": CHARACTER_PROMPT}] + user_data[user_id]["history"]
 
     try:
@@ -101,7 +100,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await asyncio.sleep(get_typing_delay(reply))
     await update.message.reply_text(reply)
 
-    # Trigger monetization if not VIP
     count = user_data[user_id]["count"]
     if user_id not in vip_users:
         if count == 15 or count % 20 == 0:
