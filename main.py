@@ -4,7 +4,8 @@ import asyncio
 import json
 import os
 import random
-from telegram import Update, ChatAction
+from telegram import Update
+from telegram.constants import ChatAction
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, CommandHandler, filters
 import openai
 
