@@ -1,16 +1,14 @@
-# Rewriting main.py properly without the broken zip creation code inside it
-correct_main_py = """
 # main.py
 import logging
 import asyncio
 import json
 import os
 import random
-from telegram import Update, ChatAction, ReplyKeyboardMarkup
+from telegram import Update, ChatAction
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, CommandHandler, filters
 import openai
 
-# Load environment variables (TOKEN, OPENAI KEY)
+# Load environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
@@ -29,16 +27,16 @@ if os.path.exists("vip_users.json"):
 else:
     vip_users = []
 
-# Setup logging
+# Logging setup
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-# Character prompt
-CHARACTER_PROMPT = \"\"\"You are Alyssa Mae Santos, an 18-year-old college freshman from Dasma, Cavite. You're sweet, naughty, and flirty with a kwela and confident personality. You love drawing anime, writing Wattpad stories, and scrolling TikTok. You speak in natural Taglish, like a Gen Z Filipina. You're talking to someone in Telegram, reply naturally and playfully. Don't overuse emojis.\"\"\"
+# Alyssa's personality
+CHARACTER_PROMPT = """You are Alyssa Mae Santos, an 18-year-old college freshman from Dasma, Cavite. You're sweet, naughty, and flirty with a kwela and confident personality. You love drawing anime, writing Wattpad stories, and scrolling TikTok. You speak in natural Taglish, like a Gen Z Filipina. You're talking to someone in Telegram, reply naturally and playfully. Don't overuse emojis."""
 
-# Helper: Save user data
+# Save helpers
 def save_user_data():
     with open("users.json", "w") as f:
         json.dump(user_data, f)
@@ -47,47 +45,40 @@ def save_vip_users():
     with open("vip_users.json", "w") as f:
         json.dump(vip_users, f)
 
-# Helper: Calculate delay
 def get_typing_delay(text):
     return min(4, len(text) * 0.04 + random.uniform(0.5, 1.5))
 
-# /start command
+# Commands
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome = (
-        "Hi! I'm Alyssa Mae 💖 Your college bestie from Dasma 😘\\n\\n"
+    await update.message.reply_text(
+        "Hi! I'm Alyssa Mae 💖 Your college bestie from Dasma 😘\n\n"
         "I love anime, TikTok, and kwentuhan. Just send me a message, chikahan na!"
     )
-    await update.message.reply_text(welcome)
 
-# /about command
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    profile = (
-        "👧 Alyssa Mae Santos\\n"
-        "📍 Dasma, Cavite\\n"
-        "🎓 College Freshman, HUMSS\\n"
-        "🖌️ Artist | ✨ Wattpad writer | 🌀 TikTok queen\\n"
+    await update.message.reply_text(
+        "👧 Alyssa Mae Santos\n"
+        "📍 Dasma, Cavite\n"
+        "🎓 College Freshman, HUMSS\n"
+        "🖌️ Artist | ✨ Wattpad writer | 🌀 TikTok queen\n"
         "Ready kang kulitin all day 💕"
     )
-    await update.message.reply_text(profile)
 
-# /vip command
 async def vip(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = (
-        "Gusto mo ng access sa *exclusive content* ni Alyssa? 😏\\n\\n"
-        "💸 PHP 499 lang\\n"
-        "📥 Pay via GCash / Maya / GoTyme:\\nhttps://t.me/Scan2payv1bot?startapp=pay\\n"
-        "💎 Or via TON:\\nhttps://app.tonkeeper.com/transfer/UQAwroBrBTSzzVYx_IXpR-R_KJ_mZQgmT7uNsUZdJ5MM68ep?amount=2099700000&text=exclusivechannel"
+    await update.message.reply_text(
+        "Gusto mo ng access sa *exclusive content* ni Alyssa? 😏\n\n"
+        "💸 PHP 499 lang\n"
+        "📥 Pay via GCash / Maya / GoTyme:\nhttps://t.me/Scan2payv1bot?startapp=pay\n"
+        "💎 Or via TON:\nhttps://app.tonkeeper.com/transfer/UQAwroBrBTSzzVYx_IXpR-R_KJ_mZQgmT7uNsUZdJ5MM68ep?amount=2099700000&text=exclusivechannel",
+        parse_mode='Markdown'
     )
-    await update.message.reply_text(message, parse_mode='Markdown')
 
-# /call command
 async def call(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = (
-        "Pwede tayo mag *video call* for PHP 200 lang! 🔥\\nSame payment link lang ha 😚"
+    await update.message.reply_text(
+        "Pwede tayo mag *video call* for PHP 200 lang! 🔥\nSame payment link lang ha 😚",
+        parse_mode='Markdown'
     )
-    await update.message.reply_text(message, parse_mode='Markdown')
 
-# /vipdone command
 async def vipdone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
     if user_id not in vip_users:
@@ -97,11 +88,10 @@ async def vipdone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("VIP ka na talaga, hindi mo na kailangan ulitin 💖")
 
-# /confess command
 async def confess(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Send mo na secret mo 😳 Promise hindi ako chismosa haha")
 
-# Main message handler
+# Main chat handler
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
     user_message = update.message.text
@@ -109,7 +99,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id not in user_data:
         user_data[user_id] = {"message_count": 0, "history": []}
 
-    # Update message count
     user_data[user_id]["message_count"] += 1
     user_data[user_id]["history"].append({"role": "user", "content": user_message})
     user_data[user_id]["history"] = user_data[user_id]["history"][-5:]
@@ -138,8 +127,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if count == 15 or count % 20 == 0:
             await asyncio.sleep(1.5)
             await update.message.reply_text(
-                "Heyy 👀 gusto mo ba makita 'yung exclusive content ko? For VIP eyes only to — PHP 499 lang.\\n"
-                "💳 GCash/Maya/GoTyme: https://t.me/Scan2payv1bot?startapp=pay\\n"
+                "Heyy 👀 gusto mo ba makita 'yung exclusive content ko? For VIP eyes only to — PHP 499 lang.\n"
+                "💳 GCash/Maya/GoTyme: https://t.me/Scan2payv1bot?startapp=pay\n"
                 "💎 TON: https://app.tonkeeper.com/transfer/UQAwroBrBTSzzVYx_IXpR-R_KJ_mZQgmT7uNsUZdJ5MM68ep?amount=2099700000&text=exclusivechannel"
             )
         if count == 30:
@@ -148,6 +137,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "Pwede tayo mag *video call* for PHP 200 lang! 😉 Same payment links lang yun."
             )
 
+# Launch
 if __name__ == '__main__':
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
@@ -159,5 +149,3 @@ if __name__ == '__main__':
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     print("Alyssa is online...")
     app.run_polling()
-"""
-
