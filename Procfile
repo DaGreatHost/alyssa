@@ -1,1 +1,1 @@
-worker: python alyssa.py
+worker: python main.py
