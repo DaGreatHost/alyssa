@@ -161,9 +161,7 @@ if __name__ == '__main__':
     app.run_polling()
 """
 
-# Rewrite main.py with the fixed content
-with open("/mnt/data/alyssa-bot/main.py", "w") as f:
-    f.write(correct_main_py)
+
 
 # Rebuild the ZIP with the fixed main.py
 import zipfile
