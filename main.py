@@ -9,13 +9,13 @@ from telegram.constants import ChatAction
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, CommandHandler, filters
 import openai
 
-# Load environment variables (TOKEN, OPENAI KEY)
+# Load environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
 # Debug log: Confirm if key is loading
-print("✅ OPENAI KEY LOADED:", openai.api_key[:10], "...")
+logging.info(f"✅ OPENAI KEY LOADED: {openai.api_key[:10]}...")
 
 # Load or initialize user message counters
 if os.path.exists("users.json"):
@@ -116,8 +116,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         response = chat["choices"][0]["message"]["content"]
     except Exception as e:
-        logging.error(e)
-        await update.message.reply_text("Oops, naputol. Try mo ulit 💭")
+        logging.error(f"❌ OPENAI ERROR: {str(e)}")
+        await update.message.reply_text("di kita magets ")
         return
 
     await update.message.chat.send_action(action=ChatAction.TYPING)
@@ -149,5 +149,5 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler("vipdone", vipdone))
     app.add_handler(CommandHandler("confess", confess))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    print("Alyssa is online...")
+    logging.info("🚀 Alyssa is online...")
     app.run_polling()
