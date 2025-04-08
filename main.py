@@ -8,6 +8,7 @@ from telegram import Update
 from telegram.constants import ChatAction
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, CommandHandler, filters
 import openai
+import traceback  # add at the top of the file if not yet imported
 
 # Load environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -116,9 +117,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         response = chat["choices"][0]["message"]["content"]
     except Exception as e:
-        logging.error(f"❌ OPENAI ERROR: {str(e)}")
-        await update.message.reply_text("di kita magets ")
-        return
+    logging.error("❌ OPENAI ERROR:")
+    logging.error(traceback.format_exc())
+    await update.message.reply_text("Oops, naputol. Try mo ulit 💭")
+    return
 
     await update.message.chat.send_action(action=ChatAction.TYPING)
     await asyncio.sleep(get_typing_delay(response))
