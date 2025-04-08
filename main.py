@@ -54,6 +54,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Your naughty HUMSS bad girl from Dasma 😏\n"
         "Chat mo lang ako, I’ll keep you company 😚"
     )
+
 # /vipdone command to mark user as VIP
 async def vipdone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
@@ -101,20 +102,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id not in vip_users:
         if count == 15 or count % 20 == 0:
             await asyncio.sleep(1.5)
-          await update.message.reply_text(
-    "Ay grabe, kulit mo 👀 Gusto mo ba makita 'yung exclusive content ko? 👀🔥\n"
-    "For VIP eyes only yan ha! ₱499 lang 💋\n\n"
-    f"💳 GCash/Maya/GoTyme:\n👉 {PAYMENT_LINKS['GCASH_MAYA']}\n\n"
-    f"💎 Pay via TON:\n👉 {PAYMENT_LINKS['TON']}"
-)
+            await update.message.reply_text(
+                "Ay grabe, kulit mo 👀 Gusto mo ba makita 'yung exclusive content ko? 👀🔥\n"
+                "For VIP eyes only yan ha! ₱499 lang 💋\n\n"
+                f"💳 GCash/Maya/GoTyme:\n👉 {PAYMENT_LINKS['GCASH_MAYA']}\n\n"
+                f"💎 Pay via TON:\n👉 {PAYMENT_LINKS['TON']}"
+            )
+
         if count == 30:
             await asyncio.sleep(1.5)
             await update.message.reply_text(
-                "Ayieee 🥺 gusto mo ba makita si Alyssa live?
-"
-                "Pwede tayo mag video call for ₱200 lang, private 😚
-
-"
+                "Ayieee 🥺 gusto mo ba makita si Alyssa live?\n"
+                "Pwede tayo mag video call for ₱200 lang, private 😚\n\n"
                 f"👉 {PAYMENT_LINKS['GCASH_MAYA']}"
             )
 
