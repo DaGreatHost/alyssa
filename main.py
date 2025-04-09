@@ -87,26 +87,26 @@ def handle_chat(message):
     count = user_interactions[chat_id]
 
     naughty_lambing_lines = [
-        "Grrr... ang sarap mo ka-chat, baka mapasama tuloy ako ng desisyon 😏",
-        "Hmp. Pilyo ka talaga 😩 ang hirap iresist ng mga banat mo 🤭",
-        "Hoyy wag kang ganyan... nakakakiliti yung mga sinasabi mo 😳",
-        "Kung nandito ka lang... baka napayakap na ako sayo 😘",
-        "Beh... pag ganyan ka ka-sweet... mapapa-oo talaga ako sayo 😌",
-        "Ikaw ha... lagi mo akong pinapalandi 😜",
-        "Hindi ko alam kung chat lang ‘to... o nililigawan mo na ako 😏",
-        "Ewan ko ba sayo... pero parang gusto kitang i-kiss right now 😘",
-        "Chat lang ba ‘to... o foreplay? 😳 Char lang… or not? 🤭",
-        "Landi mo sakin ha... I like it 😘"
+        "Alam mo, pag ganyan ka ka-sweet... baka mapa-amin na ako 😳",
+        "Uy... stop ka nga 😩 kinikilig ako sobra 😭",
+        "Grabe ka, ang landi mo 😜 gusto ko pa ng more",
+        "Kung pwede lang, gusto kitang i-hug tight rn 😚",
+        "Bat ganon? Kahit emojis mo nakakakilig na 😭💘",
+        "Chat pa more please? Huwag kang mawala ha 🥺",
+        "Aamin na sana ako kaso bigla kang di nagreply 😩 char",
+        "Promise, ikaw yung tipo na ‘di ko kayang i-ignore 😏",
+        "Sige ka... baka mainlove na ako sayo 😘",
+        "Lambing mo palang... panalo na 🫶"
     ]
 
     reply = chat_with_alyssa(message.text, username)
+    time.sleep(random.uniform(1.5, 3.0))
     bot.send_message(chat_id, reply)
 
-    # Only one mood: flirty/lambing
     if random.randint(1, 6) == 1:
+        time.sleep(random.uniform(1.0, 2.5))
         bot.send_message(chat_id, random.choice(naughty_lambing_lines))
 
-    # VIP invite triggers
     if count == 10:
         send_vip_invite(chat_id, username, type="video")
     elif count == 15 or (count > 15 and count % 20 == 0):
