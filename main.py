@@ -77,6 +77,23 @@ def send_vip_invite(chat_id, username, type="vip"):
         text = f"Uy {username}, kung gusto mo pa ng mas mainit at exclusive na content 😏\nJoin my **VIP channel** for just ₱499! 🔥"
     bot.send_message(chat_id, text, reply_markup=payment_keyboard(), parse_mode='Markdown')
 
+def get_reaction(text):
+    text = text.lower()
+    if any(word in text for word in ["ganda", "cute", "pogii", "sexy"]):
+        return "🥰"
+    elif any(word in text for word in ["miss", "sana all"]):
+        return "🥺"
+    elif any(word in text for word in ["love", "jowa", "crush"]):
+        return "❤️"
+    elif any(word in text for word in ["haha", "lmao", "lol"]):
+        return "😂"
+    elif any(word in text for word in ["loko", "landi", "pilya"]):
+        return "😜"
+    elif any(word in text for word in ["gago", "tanga", "putang", "bobo", "ulol"]):
+        return "😡"
+    else:
+        return None
+
 @bot.message_handler(content_types=['text'])
 def handle_chat(message):
     chat_id = message.chat.id
@@ -106,6 +123,11 @@ def handle_chat(message):
     if random.randint(1, 6) == 1:
         time.sleep(random.uniform(1.0, 2.5))
         bot.send_message(chat_id, random.choice(naughty_lambing_lines))
+
+    reaction = get_reaction(message.text)
+    if reaction:
+        time.sleep(random.uniform(0.5, 1.5))
+        bot.send_message(chat_id, reaction)
 
     if count == 10:
         send_vip_invite(chat_id, username, type="video")
