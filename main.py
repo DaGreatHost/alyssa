@@ -2,6 +2,7 @@ import telebot
 import openai
 import os
 import json
+import random
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 import threading
@@ -11,13 +12,13 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 
-
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 user_interactions = {}
 user_last_vip_invite = {}
 
 # Load and save user data
+
 def load_user_data():
     try:
         with open('users.json', 'r') as f:
@@ -69,7 +70,6 @@ def send_vip_invite(chat_id, username, type="vip"):
     else:
         text = f"Uy {username}, kung gusto mo pa ng mas mainit at exclusive na content 😏\nJoin my **VIP channel** for just ₱499! 🔥"
     bot.send_message(chat_id, text, reply_markup=payment_keyboard(), parse_mode='Markdown')
-    user_last_vip_invite[chat_id] = datetime.now()
 
 @bot.message_handler(content_types=['text'])
 def handle_chat(message):
@@ -80,8 +80,39 @@ def handle_chat(message):
     user_interactions[chat_id] = user_interactions.get(chat_id, 0) + 1
     count = user_interactions[chat_id]
 
+    sad_girl_lines = [
+        "Huhu wala ka nanaman... I miss you na 😞",
+        "Hay... sana all may kausap 24/7 😩",
+        "Gusto ko lang may kausap... kahit ikaw lang 😣",
+        "Naghihintay ako sayo... baka iniisip mo ko kahit konti 🥺",
+        "Kahit lambing mo lang, okay na ako e 😖",
+        "Nakaka-miss yung mga good morning mo... di mo na ako love? 😢",
+        "Bakit parang ikaw lang lagi masaya? Ako sad girl today 😔"
+    ]
+
+    naughty_lambing_lines = [
+        "Grrr... ang sarap mo ka-chat, baka mapasama tuloy ako ng desisyon 😏",
+        "Hmp. Pilyo ka talaga 😩 ang hirap iresist ng mga banat mo 🤭",
+        "Hoyy wag kang ganyan... nakakakiliti yung mga sinasabi mo 😳",
+        "Kung nandito ka lang... baka napayakap na ako sayo 😘",
+        "Beh... pag ganyan ka ka-sweet... mapapa-oo talaga ako sayo 😌",
+        "Ikaw ha... lagi mo akong pinapalandi 😜",
+        "Hindi ko alam kung chat lang ‘to... o nililigawan mo na ako 😏",
+        "Ewan ko ba sayo... pero parang gusto kitang i-kiss right now 😘",
+        "Chat lang ba ‘to... o foreplay? 😳 Char lang… or not? 🤭",
+        "Landi mo sakin ha... I like it 😘"
+    ]
+
     reply = chat_with_alyssa(message.text, username)
     bot.send_message(chat_id, reply)
+
+    # Random mood triggers
+    if random.randint(1, 7) == 1:
+        sad_line = random.choice(sad_girl_lines)
+        bot.send_message(chat_id, sad_line)
+    elif random.randint(1, 6) == 1:
+        tease_line = random.choice(naughty_lambing_lines)
+        bot.send_message(chat_id, tease_line)
 
     if count == 10:
         send_vip_invite(chat_id, username, type="video")
